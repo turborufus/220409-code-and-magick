@@ -40,6 +40,16 @@ var roundElements = function (arr) {
   return arr;
 };
 
+var renderColumn = function (ctx, color, x, y, width, height) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, width, height);
+};
+
+var renderName = function (ctx, name, color, x, y) {
+  ctx.fillStyle = color;
+  ctx.fillText(name, x, y);
+};
+
 var renderStatistics = function (ctx, names, times) {
   renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
@@ -54,21 +64,24 @@ var renderStatistics = function (ctx, names, times) {
   var gapOfChart = Math.round((CLOUD_WIDTH - getChartWidth(names.length)) / 2);
 
   for (var i = 0; i < names.length; i++) {
+    var columnColor = 'rgba(0,0,255,' + Math.fround(Math.random()) + ')';
 
     if (names[i] === 'Вы') {
-      ctx.fillStyle = COLOR_YOUR_COLUMN;
-    } else {
-      ctx.fillStyle = 'rgba(0,0,255,' + Math.fround(Math.random()) + ')';
+      columnColor = COLOR_YOUR_COLUMN;
     }
 
     var columnHeight = times[i] * CHART_HEIGHT / maxTime;
     var delta = CHART_HEIGHT - columnHeight;
 
+    var columnX = CLOUD_X + gapOfChart + (COLUMN_WIDTH + COLUMN_GAP) * i;
+    var columnY = CLOUD_Y + titleHeight + GAP + delta;
+
     // нарисовать колонки
-    ctx.fillRect(CLOUD_X + gapOfChart + (COLUMN_WIDTH + COLUMN_GAP) * i, CLOUD_Y + titleHeight + GAP + delta, COLUMN_WIDTH, columnHeight);
+    renderColumn(ctx, columnColor, columnX, columnY, COLUMN_WIDTH, columnHeight);
 
     // заполнить имена
-    ctx.fillStyle = '#000';
-    ctx.fillText(names[i], CLOUD_X + gapOfChart + (COLUMN_WIDTH + COLUMN_GAP) * i, CLOUD_Y + titleHeight + GAP + FONT_GAP + CHART_HEIGHT + GAP);
+    var nameX = CLOUD_X + gapOfChart + (COLUMN_WIDTH + COLUMN_GAP) * i;
+    var nameY = CLOUD_Y + titleHeight + GAP + FONT_GAP + CHART_HEIGHT + GAP;
+    renderName(ctx, names[i], '#000', nameX, nameY);
   }
 };
